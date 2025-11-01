@@ -151,7 +151,9 @@ error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 替换为
 #include <torch/extension.h>
 同时，按下列方式替换函数：
+
 //  替换CHECK_EQ：例如，将CHECK_EQ(xyz2.size(0), b);改为AT_ASSERT(xyz2.size(0) == b);。注意，AT_ASSERT需要条件为布尔表达式。
+
 //  替换THCudaCheck：例如，将THCudaCheck(cudaGetLastError());改为AT_CUDA_CHECK(cudaGetLastError());。AT_CUDA_CHECK会自动处理CUDA错误。
 
 
