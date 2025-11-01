@@ -81,12 +81,14 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna
 
 **解决办法：**  针对 cuda11.6 + torch1.13.1 环境，修改 cuda/emd_kernel.cu：
 （参考github链接：https://github.com/daerduoCarey/PyTorchEMD）
-对于cuda11.6+torch1.13.1，需要：
-调整 cuda/emd_kernel.cu:
+对于cuda11.6+torch1.13.1，需要调整 cuda/emd_kernel.cu:
 注释这一行`#include <THC/THC.h>`
 然后
+
 Repalce all AT_CHECK with TORCH_CHECK
+
 Replace all THCudaCheck with C10_CUDA_CHECK
+
 Replace all CHECK_EQ with TORCH_CHECK_EQ
 
 ## Debug记录 3：CUDA 12.1 上编译 pointnet2_ops_lib 报错（不支持旧 GPU 架构）
