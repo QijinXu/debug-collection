@@ -93,7 +93,7 @@ error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 
 **解决办法：**  
 在pointnet2_ops_lib/setup.py的line 19处修改
-# os.environ["TORCH_CUDA_ARCH_LIST"] = "3.7+PTX;5.0;6.0;6.1;6.2;7.0;7.5"
+/# os.environ["TORCH_CUDA_ARCH_LIST"] = "3.7+PTX;5.0;6.0;6.1;6.2;7.0;7.5"
 os.environ["TORCH_CUDA_ARCH_LIST"] = "5.0;6.0;6.1;6.2;7.0;7.5;8.0;8.6;9.0"
 	在同个文件的line 28处修改
 	    ext_modules=[
