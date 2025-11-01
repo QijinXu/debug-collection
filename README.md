@@ -92,11 +92,12 @@ Replace all CHECK_EQ with TORCH_CHECK_EQ
 ## Debug记录 3：CUDA 12.1 上编译 pointnet2_ops_lib 报错（不支持旧 GPU 架构）
 
 **问题：**  在 CUDA 12.1环境下执行编译报错：
-在H100上安装pointnet2_ops_lib时由于cuda新版本与旧代码不一致导致的问题：
+
+安装pointnet2_ops_lib时，由于cuda新版本与旧代码不一致导致
 nvcc fatal   : Unsupported gpu architecture 'compute_37'
 error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 
-**原因：** 旧版本 setup.py 中固定了低版本 GPU 架构（如 compute_37），CUDA 12 及 H100 不再支持该架构参数。
+**原因：** 旧版本 setup.py 中固定了低版本 GPU 架构（如 compute_37），CUDA 12 不再支持该架构参数。
 
 **解决办法：**  
 在pointnet2_ops_lib/setup.py的line 19处修改
