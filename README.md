@@ -73,6 +73,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna
 ```
 
 ## Debug记录 2：PyTorch 配置 EMD Loss 时版本不匹配
+
 **问题：**  使用 PyTorchEMD 时，出现 Torch 与 CUDA 版本不兼容。
 
 **原因：**  
@@ -88,8 +89,9 @@ Repalce all AT_CHECK with TORCH_CHECK
 Replace all THCudaCheck with C10_CUDA_CHECK
 Replace all CHECK_EQ with TORCH_CHECK_EQ
 
-## Debug记录 3：H100 上编译 pointnet2_ops_lib 报错（不支持旧 GPU 架构）
-**问题：**  在 H100（CUDA 12.1）环境下执行编译报错：
+## Debug记录 3：CUDA 12.1 上编译 pointnet2_ops_lib 报错（不支持旧 GPU 架构）
+
+**问题：**  在 CUDA 12.1环境下执行编译报错：
 在H100上安装pointnet2_ops_lib时由于cuda新版本与旧代码不一致导致的问题：
 nvcc fatal   : Unsupported gpu architecture 'compute_37'
 error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
@@ -131,10 +133,11 @@ os.environ["TORCH_CUDA_ARCH_LIST"] = "5.0;6.0;6.1;6.2;7.0;7.5;8.0;8.6;9.0"
 ```
 
 ## Debug记录 4：安装 PyTorchEMD 时编译错误（找不到 THC/THC.h）
-类似于记录2，这里记录另一种解决办法.
-emdloss对应的github链接：https://github.com/daerduoCarey/PyTorchEMD
-**问题：**  运行'python setup.py install'时出错；
-安装pytorch_emd时出现的错误：cuda/emd_kernel.cu:14:10: fatal error: THC/THC.h: No such file or directory
+类似于Debug记录2，这里补充另一种解决办法（cuda12.1）.
+
+(emdloss对应的github链接：https://github.com/daerduoCarey/PyTorchEMD)
+
+**问题：**  运行`python setup.py install`时出错：cuda/emd_kernel.cu:14:10: fatal error: THC/THC.h: No such file or directory
 error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 
 **原因：** 旧版 (<torch1.10) PyTorch 代码中使用的头文件 THC/THC.h 在新版中已移除。并且一些旧宏（如 CHECK_EQ, THCudaCheck）已被更新的 AT/C10 接口取代。
