@@ -55,8 +55,8 @@
 
 **问题：**  
 执行命令
-
-pip install -i https://pypi.tuna.tsinghua.edu.cn/simple lpips
+'''
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple lpips'''
 证书报错：
 Could not fetch URL https://pypi.tuna.tsinghua.edu.cn/simple/lpips/: There was a problem confirming the ssl certificate: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:748) – skipping
 
@@ -66,7 +66,9 @@ Could not fetch URL https://pypi.tuna.tsinghua.edu.cn/simple/lpips/: There was a
 **解决办法：**  
 在安装命令中添加 --trusted-host 参数，跳过 SSL 验证：
 
+'''
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn lpips
+'''
 
 ## Debug记录 2：PyTorch 配置 EMD Loss 时版本不匹配
 **问题：**  使用 PyTorchEMD 时，出现 Torch 与 CUDA 版本不兼容。
@@ -77,8 +79,9 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna
 **解决办法：**  针对 cuda11.6 + torch1.13.1 环境，修改 cuda/emd_kernel.cu：
 （参考github链接：https://github.com/daerduoCarey/PyTorchEMD）
 对于cuda11.6+torch1.13.1，需要：
-modified cuda/emd_kernel.cu as:
-Comment #include <THC/THC.h>
+调整 cuda/emd_kernel.cu:
+注释这一行'#include <THC/THC.h>'
+然后
 Repalce all AT_CHECK with TORCH_CHECK
 Replace all THCudaCheck with C10_CUDA_CHECK
 Replace all CHECK_EQ with TORCH_CHECK_EQ
@@ -93,9 +96,12 @@ error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 
 **解决办法：**  
 在pointnet2_ops_lib/setup.py的line 19处修改
-/# os.environ["TORCH_CUDA_ARCH_LIST"] = "3.7+PTX;5.0;6.0;6.1;6.2;7.0;7.5"
+'''
+\# os.environ["TORCH_CUDA_ARCH_LIST"] = "3.7+PTX;5.0;6.0;6.1;6.2;7.0;7.5"
 os.environ["TORCH_CUDA_ARCH_LIST"] = "5.0;6.0;6.1;6.2;7.0;7.5;8.0;8.6;9.0"
-	在同个文件的line 28处修改
+'''
+在同个文件的line 28处修改
+'''
 	    ext_modules=[
         CUDAExtension(
             name="pointnet2_ops._ext",
@@ -113,17 +119,20 @@ os.environ["TORCH_CUDA_ARCH_LIST"] = "5.0;6.0;6.1;6.2;7.0;7.5;8.0;8.6;9.0"
             include_dirs=[osp.join(this_dir, _ext_src_root, "include")],
         )
 ],
+'''
 
 在pointnet2_ops_lib/pointnet2_ops/_ext-src/src/sampling_gpu.cu文件的前几行添加
+'''
 #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 900  
 #define CUDA_ARCH_90_SUPPORT
 #endif
+'''
 
 ## Debug记录 4：安装 PyTorchEMD 时编译错误（找不到 THC/THC.h）
 类似于记录2，这里记录另一种解决办法.
 emdloss对应的github链接：https://github.com/daerduoCarey/PyTorchEMD
-**问题：**  运行python setup.py install时出错；
-安装pytorch_emd时，运行python setup.py install时出现的错误：cuda/emd_kernel.cu:14:10: fatal error: THC/THC.h: No such file or directory
+**问题：**  运行'python setup.py install'时出错；
+安装pytorch_emd时出现的错误：cuda/emd_kernel.cu:14:10: fatal error: THC/THC.h: No such file or directory
 error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 
 **原因：** 旧版 (<torch1.10) PyTorch 代码中使用的头文件 THC/THC.h 在新版中已移除。并且一些旧宏（如 CHECK_EQ, THCudaCheck）已被更新的 AT/C10 接口取代。
