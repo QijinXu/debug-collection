@@ -55,7 +55,7 @@
 
 **问题：**  
 执行命令
-```bash
+
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple lpips
 证书报错：
 Could not fetch URL https://pypi.tuna.tsinghua.edu.cn/simple/lpips/: There was a problem confirming the ssl certificate: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed (_ssl.c:748) – skipping
