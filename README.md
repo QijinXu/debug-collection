@@ -166,8 +166,9 @@ error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 **关联记录**：与记录 2、4 类似  
 
 **问题：**  执行编译命令时
-```bash
-python setup.py build_ext --inplace```
+```
+python setup.py build_ext --inplace
+```
 出现 THC 库缺失及符号未定义错误
 
 **原因：** 旧版 PyTorch 的 THC 库已废弃。
