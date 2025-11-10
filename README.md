@@ -161,5 +161,25 @@ error: command '/usr/local/cuda-12.1/bin/nvcc' failed with exit code 1
 
 //  替换THCudaCheck：例如，将THCudaCheck(cudaGetLastError());改为AT_CUDA_CHECK(cudaGetLastError());。AT_CUDA_CHECK会自动处理CUDA错误。
 
+## Debug记录 5：复现 PointAttn（AAAI 2024）环境配置问题  
+**环境配置**：CUDA 11.7 + PyTorch 1.13.1  
+**关联记录**：与记录 2、4 类似  
 
+**问题：**  执行编译命令时
+```bash
+python setup.py build_ext --inplace```
+出现 THC 库缺失及符号未定义错误
+
+**原因：** 旧版 PyTorch 的 THC 库已废弃。
+
+**解决办法：**  
+直接注释这一行 
+
+后面仍有报错： 
+/data/Xuqijin/code2024_AAAI_PointAttN/utils/mm3d_pn2/ops/ball_query/src/ball_query.cpp:12:8: error: ‘THCState’ does not name a type; did you mean ‘THPDtype’? extern THCState *state; 
+注释掉相应行，并在下一行添加
+```
+#include <ATen/cuda/CUDAContext.h>
+```
+此外，在相应文件夹下 （ utils/mm3d_pn2/ops ）存在多个配置文件(.cpp)，**里面的内容都按同样的方式修改即可**。 
 
